@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Extractor & Tracker</title>
+    <!-- Embedded Tailwind CSS for offline use -->
+    <style>
+        /*! tailwindcss v3.4.4 | MIT License | https://tailwindcss.com */
+        /*
+        1. Preflight
+        2. Base
+        3. Components
+        4. Utilities
+        */
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap');
+        *,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::before,::after{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:sans-serif;font-feature-settings:normal;font-variation-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,samp,pre{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit]{-webkit-appearance:button;background-color:transparent;background-image:none}body{font-family: 'Vazirmatn', sans-serif; direction: ltr;}
+        .text-outline{text-shadow:-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;}
+        .disabled-button{opacity:0.5;cursor:not-allowed;}
+        *, ::before, ::after { --tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; --tw-rotate: 0; --tw-skew-x: 0; --tw-skew-y: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-pan-x: ; --tw-pan-y: ; --tw-pinch-zoom: ; --tw-scroll-snap-strictness: proximity; --tw-ordinal: ; --tw-slashed-zero: ; --tw-numeric-figure: ; --tw-numeric-spacing: ; --tw-numeric-fraction: ; --tw-ring-inset: ; --tw-ring-offset-width: 0px; --tw-ring-offset-color: #fff; --tw-ring-color: rgb(59 130 246 / 0.5); --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-shadow: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-shadow-colored: 0 0 #0000; --tw-blur: ; --tw-brightness: ; --tw-contrast: ; --tw-grayscale: ; --tw-hue-rotate: ; --tw-invert: ; --tw-saturate: ; --tw-sepia: ; --tw-drop-shadow: ; --tw-backdrop-blur: ; --tw-backdrop-brightness: ; --tw-backdrop-contrast: ; --tw-backdrop-grayscale: ; --tw-backdrop-hue-rotate: ; --tw-backdrop-invert: ; --tw-backdrop-opacity: ; --tw-backdrop-saturate: ; --tw-backdrop-sepia: }
+        .bg-gray-100{background-color:#f3f4f6}
+        .bg-gray-200{background-color:#e5e7eb}
+        .bg-gray-900{background-color:#111827}
+        .bg-blue-600{background-color:#2563eb}
+        .bg-blue-700{background-color:#1d4ed8}
+        .bg-purple-200{background-color:#e9d5ff}
+        .bg-purple-500{background-color:#a855f7}
+        .bg-purple-600{background-color:#9333ea}
+        .bg-purple-700{background-color:#7e22ce}
+        .bg-green-600{background-color:#16a34a}
+        .bg-green-700{background-color:#15803d}
+        .bg-red-600{background-color:#dc2626}
+        .bg-red-700{background-color:#b91c1c}
+        .bg-yellow-100{background-color:#fefce8}
+        .bg-yellow-800{background-color:#92400e}
+        .bg-white{background-color:#fff}
+        .bg-gray-800{background-color:#1f2937}
+        .dark .bg-gray-900{background-color:#111827}
+        .dark .bg-gray-800{background-color:#1f2937}
+        .dark .bg-gray-700{background-color:#374151}
+        .dark .bg-blue-400{background-color:#60a5fa}
+        .dark .bg-purple-700{background-color:#7e22ce}
+        .dark .bg-yellow-800{background-color:#92400e}
+        .dark .bg-gray-600{background-color:#4b5563}
+        .dark .text-gray-100{color:#f3f4f6}
+        .dark .text-gray-300{color:#d1d5db}
+        .dark .text-gray-400{color:#9ca3af}
+        .dark .text-blue-400{color:#60a5fa}
+        .dark .border-gray-600{border-color:#4b5563}
+        .dark .border-gray-700{border-color:#374151}
+        .dark .text-gray-900{color:#111827}
+        .flex{display:flex}
+        .hidden{display:none}
+        .w-full{width:100%}
+        .flex-grow{flex-grow:1}
+        .appearance-none{-webkit-appearance:none;-moz-appearance:none;appearance:none}
+        .rounded-full{border-radius:9999px}
+        .rounded-lg{border-radius:.5rem}
+        .rounded-md{border-radius:.375rem}
+        .rounded-xl{border-radius:.75rem}
+        .rounded-2xl{border-radius:1rem}
+        .border{border-width:1px}
+        .border-b{border-bottom-width:1px}
+        .border-gray-200{border-color:#e5e7eb}
+        .border-gray-300{border-color:#d1d5db}
+        .border-gray-600{border-color:#4b5563}
+        .p-2{padding:.5rem}
+        .p-3{padding:.75rem}
+        .p-4{padding:1rem}
+        .p-6{padding:1.5rem}
+        .py-2{padding-top:.5rem;padding-bottom:.5rem}
+        .py-3{padding-top:.75rem;padding-bottom:.75rem}
+        .px-2{padding-left:.5rem;padding-right:.5rem}
+        .px-6{padding-left:1.5rem;padding-right:1.5rem}
+        .h-2{height:.5rem}
+        .h-8{height:2rem}
+        .h-auto{height:auto}
+        .min-h-screen{min-height:100vh}
+        .w-8{width:2rem}
+        .w-20{width:5rem}
+        .w-full{width:100%}
+        .max-w-3xl{max-width:48rem}
+        .flex-col{flex-direction:column}
+        .items-center{align-items:center}
+        .justify-center{justify-content:center}
+        .justify-between{justify-content:space-between}
+        .gap-2{gap:.5rem}
+        .gap-4{gap:1rem}
+        .drop-shadow-lg{--tw-drop-shadow:drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1);filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}
+        .shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1),0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}
+        .shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1),0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}
+        .transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}
+        .transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}
+        .duration-300{transition-duration:300ms}
+        .ease-in-out{transition-timing-function:cubic-bezier(0.4,0,0.2,1)}
+        .transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+        .hover\:bg-blue-700:hover{background-color:#1d4ed8}
+        .hover\:bg-green-700:hover{background-color:#15803d}
+        .hover\:bg-purple-700:hover{background-color:#7e22ce}
+        .hover\:bg-red-700:hover{background-color:#b91c1c}
+        .hover\:scale-105:hover{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}
+        .focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
+        .focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow,0 0 #0000)}
+        .focus\:ring-blue-500:focus{--tw-ring-color:#3b82f6}
+        .absolute{position:absolute}
+        .relative{position:relative}
+        .inset-0{top:0;right:0;bottom:0;left:0}
+        .z-50{z-index:50}
+        .cursor-pointer{cursor:pointer}
+        .cursor-not-allowed{cursor:not-allowed}
+        .overflow-hidden{overflow:hidden}
+        .text-center{text-align:center}
+        .text-right{text-align:right}
+        .font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+        .font-bold{font-weight:700}
+        .font-semibold{font-weight:600}
+        .text-sm{font-size:.875rem;line-height:1.25rem}
+        .text-base{font-size:1rem;line-height:1.5rem}
+        .text-lg{font-size:1.125rem;line-height:1.75rem}
+        .text-xl{font-size:1.25rem;line-height:1.75rem}
+        .text-3xl{font-size:1.875rem;line-height:2.25rem}
+        .text-4xl{font-size:2.25rem;line-height:2.5rem}
+        .text-gray-900{color:#111827}
+        .text-blue-600{color:#2563eb}
+        .text-gray-600{color:#4b5563}
+        .text-gray-300{color:#d1d5db}
+        .text-white{color:#fff}
+        .whitespace-nowrap{white-space:nowrap}
+        @media (min-width:768px){.md\:flex-row{flex-direction:row}
+        .md\:text-4xl{font-size:2.25rem;line-height:2.5rem}
+        .md\:mt-0{margin-top:0px}
+        .md\:w-auto{width:auto}}
+        
+        /* Custom Styles */
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            direction: ltr;
+        }
+        .text-outline {
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+        }
+        .disabled-button {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center p-4">
+
+    <!-- App Title Section -->
+    <div class="w-full max-w-3xl text-center mb-6">
+        <h1 class="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 drop-shadow-lg">
+            Color Extractor & Tracker
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">
+            Produced by DSRG
+        </p>
+        <p class="text-gray-600 dark:text-gray-300 mt-2">
+            Select an image, or use the live camera for automatic color tracking.
+        </p>
+    </div>
+
+    <!-- Main Control Panel -->
+    <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
+        
+        <!-- Manual Extraction Section -->
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-600">
+            <h2 class="text-xl font-bold mb-4">Section 1: Manual Extraction from Image</h2>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex gap-2">
+                    <label id="imageInputLabel" for="imageInput" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap">
+                        Select from Gallery
+                    </label>
+                    <input type="file" id="imageInput" accept="image/*" class="hidden">
+                    
+                    <label id="cameraInputLabel" for="cameraInput" class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-now-rap">
+                        Take Photo
+                    </label>
+                    <input type="file" id="cameraInput" accept="image/*" capture="camera" class="hidden">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Shared Settings Section -->
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-600">
+            <h2 class="text-xl font-bold mb-4">Section 2: General Settings</h2>
+            <div class="flex items-center gap-2 w-full md:w-auto mt-4 md:mt-0">
+                <label for="sampleSize" class="whitespace-nowrap font-semibold">Sampling Circle Diameter:</label>
+                <input type="range" id="sampleSize" min="2" max="30" value="10" class="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer dark:bg-purple-700">
+                <span id="sampleSizeValue" class="font-mono w-8 text-right bg-purple-500 text-white rounded-md px-2 py-1">10</span>
+            </div>
+        </div>
+
+        <!-- Live Tracking Section -->
+        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 mb-4 border border-gray-200 dark:border-gray-600">
+            <h2 class="text-xl font-bold mb-4">Section 3: Live Camera Tracking</h2>
+            <div class="flex flex-col items-center mb-4 gap-4">
+                <div class="flex items-center gap-2">
+                    <label for="durationInput" class="whitespace-nowrap font-semibold">Tracking Duration (min):</label>
+                    <input type="number" id="durationInput" min="1" max="300" value="10" class="w-20 p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-center bg-yellow-100 dark:bg-yellow-800">
+                </div>
+                <div class="flex items-center gap-2">
+                    <label for="intervalInput" class="whitespace-nowrap font-semibold">Tracking Interval (sec):</label>
+                    <input type="number" id="intervalInput" min="1" max="300" value="10" class="w-20 p-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-center bg-yellow-100 dark:bg-yellow-800">
+                </div>
+            </div>
+            
+            <div class="flex justify-center gap-4 mt-4">
+                <button id="startTrackingButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap">
+                    Start Live Tracking
+                </button>
+                <button id="stopTrackingButton" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap" disabled>
+                    Stop Tracking
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Image/Video Display Section -->
+    <div class="w-full max-w-3xl bg-gray-100 dark:bg-gray-700 rounded-2xl shadow-xl overflow-hidden mb-6 relative">
+        <!-- The video element is hidden and used only as a source for the canvas -->
+        <video id="videoElement" class="hidden" autoplay playsinline></video>
+        <canvas id="mainCanvas" class="w-full h-auto rounded-2xl cursor-pointer"></canvas>
+    </div>
+
+    <!-- Manual Save Controls moved here -->
+    <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
+        <h2 class="text-xl font-bold mb-4">Manual Save</h2>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <input type="text" id="colorNameInput" placeholder="Sample Name" class="flex-grow p-3 rounded-xl border border-gray-300 dark:border-gray-600 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            <button id="saveButton" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap">
+                Save Manually
+            </button>
+        </div>
+    </div>
+
+    <!-- Data Management Section -->
+    <div class="w-full max-w-3xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-6">
+        <h2 class="text-xl font-bold mb-4">Section 4: Data Management</h2>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button id="downloadButton" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap">
+                Download CSV Report
+            </button>
+            <button id="clearButton" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg whitespace-nowrap">
+                Clear All Data
+            </button>
+        </div>
+        <div id="sampleList" class="mt-4">
+            <!-- Saved data will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Dialog -->
+    <div id="confirmationDialog" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl text-center flex flex-col items-center">
+            <p id="dialogMessage" class="text-gray-900 dark:text-gray-100 font-bold text-lg mb-4">Are you sure you want to start live tracking?</p>
+            <div class="flex gap-4">
+                <button id="confirmBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg">Confirm</button>
+                <button id="cancelBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 shadow-lg">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM element references
+        const imageInput = document.getElementById('imageInput');
+        const cameraInput = document.getElementById('cameraInput');
+        const imageInputLabel = document.getElementById('imageInputLabel');
+        const cameraInputLabel = document.getElementById('cameraInputLabel');
+        const videoElement = document.getElementById('videoElement');
+        const mainCanvas = document.getElementById('mainCanvas');
+        const sampleSizeInput = document.getElementById('sampleSize');
+        const sampleSizeValue = document.getElementById('sampleSizeValue');
+        const colorNameInput = document.getElementById('colorNameInput');
+        const saveButton = document.getElementById('saveButton');
+        const durationInput = document.getElementById('durationInput');
+        const intervalInput = document.getElementById('intervalInput');
+        const startTrackingButton = document.getElementById('startTrackingButton');
+        const stopTrackingButton = document.getElementById('stopTrackingButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const clearButton = document.getElementById('clearButton');
+        const sampleList = document.getElementById('sampleList');
+        const confirmationDialog = document.getElementById('confirmationDialog');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        const ctx = mainCanvas.getContext('2d', { willReadFrequently: true });
+        let currentImage = null;
+        let colorSamples = []; // Array for manually saved samples
+        let trackingData = []; // Array for live tracking data
+        let trackingIntervalId = null;
+        let countdownIntervalId = null;
+        let remainingTime = 0;
+        let timeElapsed = 0;
+        let isTracking = false;
+        let lastSampledColor = null; // New variable to store the last sampled color
+
+        // Function to convert RGB components to a CSS RGB string
+        function createRgbString(r, g, b) {
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // --- Shared UI Functions ---
+        
+        // Shared function to draw the overlay circle and info
+        function drawOverlay(x, y, diameter, r, g, b) {
+            const radius = diameter / 2;
+            
+            // Draw a semi-transparent black overlay on top of the circle
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 0.8)`;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.closePath();
+            
+            // Draw a thick white circle for better visibility
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            ctx.closePath();
+            
+            // Draw a thin black circle for contrast
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+
+            // Draw color info text
+            const infoText = `R:${r}, G:${g}, B:${b}`;
+
+            ctx.fillStyle = '#fff';
+            // Increase font size for better readability
+            ctx.font = "bold 20px Vazirmatn, sans-serif"; 
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(infoText, x + radius + 10, y);
+        }
+
+        // --- Manual Mode Functions ---
+        
+        // Function to get color on click
+        function getColor(event) {
+            if (isTracking || !currentImage) return;
+
+            const rect = mainCanvas.getBoundingClientRect();
+            // Get click/touch coordinates relative to the canvas
+            const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+
+            // Scale these coordinates to the actual pixel dimensions of the canvas
+            const scaleX = mainCanvas.width / rect.width;
+            const scaleY = mainCanvas.height / rect.height;
+            const pixelX = Math.floor(x * scaleX);
+            const pixelY = Math.floor(y * scaleY);
+            
+            const diameter = parseInt(sampleSizeInput.value);
+            const radius = diameter / 2;
+
+            // Perform color averaging
+            let r_sum = 0, g_sum = 0, b_sum = 0, pixel_count = 0;
+            const startX = Math.max(0, pixelX - radius);
+            const endX = Math.min(currentImage.width, pixelX + radius);
+            const startY = Math.max(0, pixelY - radius);
+            const endY = Math.min(currentImage.height, pixelY + radius);
+
+            // Redraw image before getting pixel data to ensure it's up to date
+            ctx.drawImage(currentImage, 0, 0, mainCanvas.width, mainCanvas.height);
+            const imageData = ctx.getImageData(startX, startY, endX - startX, endY - startY);
+            
+            for (let i = 0; i < imageData.data.length; i += 4) {
+                const currentPixelX = startX + (i / 4) % (endX - startX);
+                const currentPixelY = startY + Math.floor((i / 4) / (endX - startX));
+                const distance = Math.sqrt(Math.pow(currentPixelX - pixelX, 2) + Math.pow(currentPixelY - pixelY, 2));
+
+                if (distance <= radius) {
+                    r_sum += imageData.data[i];
+                    g_sum += imageData.data[i + 1];
+                    b_sum += imageData.data[i + 2];
+                    pixel_count++;
+                }
+            }
+
+            if (pixel_count > 0) {
+                const avg_r = Math.round(r_sum / pixel_count);
+                const avg_g = Math.round(g_sum / pixel_count);
+                const avg_b = Math.round(b_sum / pixel_count);
+                
+                // Redraw image and then the color circle at the correct pixel coordinates
+                ctx.drawImage(currentImage, 0, 0, mainCanvas.width, mainCanvas.height);
+                drawOverlay(pixelX, pixelY, diameter, avg_r, avg_g, avg_b);
+                
+                // Store the last sampled color for the save button
+                lastSampledColor = { r: avg_r, g: avg_g, b: avg_b };
+                
+                // Vibrate on successful sample
+                if ("vibrate" in navigator) {
+                    navigator.vibrate(50); // Vibrate for 50ms
+                }
+            }
+        }
+
+        // Function to load image onto the canvas
+        function loadImageToCanvas(file) {
+            stopTracking();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    currentImage = img;
+                    
+                    // Set canvas dimensions to the image's intrinsic size
+                    mainCanvas.width = img.width;
+                    mainCanvas.height = img.height;
+                    
+                    // Adjust the CSS size for responsiveness while maintaining aspect ratio
+                    const aspectRatio = img.width / img.height;
+                    mainCanvas.style.height = `${mainCanvas.offsetWidth / aspectRatio}px`;
+                    
+                    ctx.drawImage(img, 0, 0, img.width, img.height);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- Live Tracking Mode Functions ---
+        
+        // Function to start the live video stream
+        async function startVideoStream() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                videoElement.srcObject = stream;
+                videoElement.play();
+                
+                videoElement.onloadedmetadata = () => {
+                    const size = Math.min(videoElement.videoWidth, videoElement.videoHeight);
+                    mainCanvas.width = size;
+                    mainCanvas.height = size;
+                    mainCanvas.style.height = `${mainCanvas.offsetWidth}px`;
+
+                    currentImage = null; // Clear static image
+                    requestAnimationFrame(drawLiveFeed);
+                };
+            } catch (err) {
+                console.error("Error accessing the camera: ", err);
+                const messageBox = document.createElement('div');
+                messageBox.innerHTML = `
+                    <div class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl text-center">
+                            <p class="text-gray-900 dark:text-gray-100 font-bold">Unable to access the camera.</p>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Please enable camera access and reload the page.</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(messageBox);
+                setTimeout(() => {
+                    document.body.removeChild(messageBox);
+                }, 5000);
+            }
+        }
+
+        // Function to draw the video feed and overlay on the canvas
+        function drawLiveFeed() {
+            if (!isTracking) return;
+
+            const cropSize = Math.min(videoElement.videoWidth, videoElement.videoHeight);
+            const sourceX = (videoElement.videoWidth - cropSize) / 2;
+            const sourceY = (videoElement.videoHeight - cropSize) / 2;
+            
+            ctx.drawImage(videoElement, sourceX, sourceY, cropSize, cropSize, 0, 0, mainCanvas.width, mainCanvas.height);
+            
+            const centerX = mainCanvas.width / 2;
+            const centerY = mainCanvas.height / 2;
+            const imageData = ctx.getImageData(centerX, centerY, 1, 1).data;
+            const r = imageData[0];
+            const g = imageData[1];
+            const b = imageData[2];
+            
+            const diameter = parseInt(sampleSizeInput.value);
+            drawOverlay(centerX, centerY, diameter, r, g, b);
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            // Increase font size for countdown timer
+            ctx.font = "bold 20px Vazirmatn, sans-serif";
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'bottom';
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            ctx.fillText(timeString, mainCanvas.width - 10, mainCanvas.height - 10);
+
+            requestAnimationFrame(drawLiveFeed);
+        }
+
+        // --- Button State Management Functions ---
+        function setButtonState(disabled) {
+            startTrackingButton.disabled = disabled;
+            saveButton.disabled = disabled;
+            colorNameInput.disabled = disabled;
+            downloadButton.disabled = disabled;
+            clearButton.disabled = disabled;
+            
+            imageInput.disabled = disabled;
+            cameraInput.disabled = disabled;
+
+            const buttons = [startTrackingButton, saveButton, downloadButton, clearButton];
+            buttons.forEach(btn => {
+                if (disabled) {
+                    btn.classList.add('disabled-button');
+                } else {
+                    btn.classList.remove('disabled-button');
+                }
+            });
+
+            if (disabled) {
+                imageInputLabel.classList.add('disabled-button');
+                cameraInputLabel.classList.add('disabled-button');
+            } else {
+                imageInputLabel.classList.remove('disabled-button');
+                cameraInputLabel.classList.remove('disabled-button');
+            }
+        }
+
+        // Function to start the tracking process
+        function startTracking() {
+            const duration = parseInt(durationInput.value);
+            const interval = parseInt(intervalInput.value);
+            const totalSeconds = duration * 60;
+
+            if (duration <= 0 || duration > 300 || interval <= 0 || interval > 300) {
+                showConfirmationDialog("Please enter valid values for duration (1-300 min) and interval (1-300 sec).", () => {});
+                return;
+            }
+            if (interval > totalSeconds) {
+                showConfirmationDialog("The tracking interval cannot be greater than the total duration.", () => {});
+                return;
+            }
+            
+            // Disable all buttons except the Stop button
+            setButtonState(true);
+            stopTrackingButton.disabled = false;
+            stopTrackingButton.classList.remove('disabled-button');
+
+            colorSamples = [];
+            trackingData = [];
+            renderSampleList();
+            stopTracking();
+            
+            isTracking = true;
+            
+            timeElapsed = 0;
+            remainingTime = duration * 60;
+
+            if (interval >= totalSeconds) {
+                sampleColor();
+                setTimeout(() => {
+                    if (isTracking) {
+                        sampleColor();
+                        stopTracking();
+                    }
+                }, totalSeconds * 1000);
+            } else {
+                sampleColor();
+                trackingIntervalId = setInterval(sampleColor, interval * 1000);
+                countdownIntervalId = setInterval(() => {
+                    remainingTime--;
+                    if (remainingTime <= 0) {
+                        stopTracking();
+                    }
+                }, 1000);
+            }
+            
+            startVideoStream();
+        }
+
+        // Function to stop the tracking process
+        function stopTracking() {
+            if (!isTracking) return;
+            
+            isTracking = false;
+            clearInterval(trackingIntervalId);
+            clearInterval(countdownIntervalId);
+            
+            // Re-enable all buttons
+            setButtonState(false);
+            stopTrackingButton.disabled = true;
+            stopTrackingButton.classList.add('disabled-button');
+
+            if (videoElement.srcObject) {
+                videoElement.srcObject.getTracks().forEach(track => track.stop());
+                videoElement.srcObject = null;
+                ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+                mainCanvas.width = 0;
+                mainCanvas.height = 0;
+            }
+            
+            if (trackingData.length > 0) {
+                downloadCSV();
+            }
+        }
+        
+        // Function to perform color sampling during live tracking
+        function sampleColor() {
+            if (!isTracking) return;
+            const centerX = mainCanvas.width / 2;
+            const centerY = mainCanvas.height / 2;
+            const imageData = ctx.getImageData(centerX, centerY, 1, 1).data;
+            const r = imageData[0];
+            const g = imageData[1];
+            const b = imageData[2];
+
+            trackingData.push({
+                time: timeElapsed,
+                r: r,
+                g: g,
+                b: b
+            });
+            
+            timeElapsed += parseInt(intervalInput.value);
+            renderSampleList();
+        }
+
+        // Function to render the list of all saved and tracked colors
+        function renderSampleList() {
+            sampleList.innerHTML = '';
+            
+            if (colorSamples.length > 0) {
+                const manualHeader = document.createElement('h3');
+                manualHeader.className = 'font-bold mt-4 mb-2';
+                manualHeader.textContent = 'Manual Samples:';
+                sampleList.appendChild(manualHeader);
+                
+                colorSamples.forEach((sample, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center gap-4 py-2 border-b border-gray-200 dark:border-gray-700';
+                    item.innerHTML = `
+                        <div class="w-8 h-8 rounded-full" style="background-color: ${createRgbString(sample.r, sample.g, sample.b)};"></div>
+                        <span class="font-semibold">${sample.name}</span>
+                        <span class="font-mono text-sm text-gray-600 dark:text-gray-400">R:${sample.r}, G:${sample.g}, B:${sample.b}</span>
+                    `;
+                    sampleList.appendChild(item);
+                });
+            }
+            
+            if (trackingData.length > 0) {
+                const trackingHeader = document.createElement('h3');
+                trackingHeader.className = 'font-bold mt-4 mb-2';
+                trackingHeader.textContent = 'Live Tracking Data:';
+                sampleList.appendChild(trackingHeader);
+                
+                trackingData.forEach((sample, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center gap-4 py-2 border-b border-gray-200 dark:border-gray-700';
+                    item.innerHTML = `
+                        <span class="font-semibold">${sample.time}s</span>
+                        <div class="w-8 h-8 rounded-full" style="background-color: rgb(${sample.r}, ${sample.g}, ${sample.b});"></div>
+                        <span class="font-mono text-sm text-gray-600 dark:text-gray-400">R:${sample.r}, G:${sample.g}, B:${sample.b}</span>
+                    `;
+                    sampleList.appendChild(item);
+                });
+            }
+        }
+        
+        // Custom confirmation dialog function
+        function showConfirmationDialog(message, onConfirm) {
+            document.getElementById('dialogMessage').textContent = message;
+            confirmationDialog.classList.remove('hidden');
+
+            const handleConfirm = () => {
+                onConfirm();
+                confirmationDialog.classList.add('hidden');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+
+            const handleCancel = () => {
+                confirmationDialog.classList.add('hidden');
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+            };
+
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+        }
+        
+        // Function to handle CSV download
+        function downloadCSV() {
+            const now = new Date();
+            const dateStr = now.toISOString().slice(0, 10);
+            const timeStr = now.toTimeString().slice(0, 8).replace(/:/g, '-');
+            const filename = `color-report-${dateStr}_${timeStr}.csv`;
+
+            const manualHeaders = ["Type", "Color Name", "Red", "Green", "Blue"];
+            const manualRows = colorSamples.map(sample => `"Manual","${sample.name}",${sample.r},${sample.g},${sample.b}`);
+            
+            const trackingHeaders = ["Type", "Time (sec)", "Red", "Green", "Blue"];
+            const trackingRows = trackingData.map(sample => `"Live Tracking",${sample.time},${sample.r},${sample.g},${sample.b}`);
+
+            const allRows = [];
+            if (manualRows.length > 0) {
+                allRows.push(manualHeaders.join(','));
+                allRows.push(...manualRows);
+            }
+            if (trackingRows.length > 0) {
+                if (manualRows.length > 0) allRows.push('');
+                allRows.push(trackingHeaders.join(','));
+                allRows.push(...trackingRows);
+            }
+            
+            const csvString = allRows.join('\n');
+            const blob = new Blob(["\ufeff" + csvString], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // --- Event Listeners and Setup ---
+
+        imageInput.addEventListener('change', (event) => {
+            if (isTracking) return;
+            const file = event.target.files[0];
+            if (file) loadImageToCanvas(file);
+        });
+
+        cameraInput.addEventListener('change', (event) => {
+            if (isTracking) return;
+            const file = event.target.files[0];
+            if (file) loadImageToCanvas(file);
+        });
+        
+        sampleSizeInput.addEventListener('input', () => {
+            sampleSizeValue.textContent = sampleSizeInput.value;
+        });
+
+        mainCanvas.addEventListener('click', getColor);
+        mainCanvas.addEventListener('touchstart', getColor);
+
+        saveButton.addEventListener('click', () => {
+            if (isTracking) return;
+            const colorName = colorNameInput.value.trim();
+            
+            if (!currentImage) {
+                showConfirmationDialog("Please first select an image from the gallery.", () => {});
+                return;
+            }
+            if (!lastSampledColor) {
+                showConfirmationDialog("Please enter a name and tap on the image to select a color.", () => {});
+                return;
+            }
+            if (colorName) {
+                colorSamples.push({ 
+                    name: colorName, 
+                    r: lastSampledColor.r, 
+                    g: lastSampledColor.g, 
+                    b: lastSampledColor.b, 
+                    type: 'manual' 
+                });
+                renderSampleList();
+                colorNameInput.value = '';
+            } else {
+                showConfirmationDialog("Please enter a name for the sample.", () => {});
+            }
+        });
+
+        startTrackingButton.addEventListener('click', () => {
+            showConfirmationDialog("Are you sure you want to start live tracking?", startTracking);
+        });
+        stopTrackingButton.addEventListener('click', stopTracking);
+        
+        downloadButton.addEventListener('click', () => {
+            if (isTracking) return;
+            if (colorSamples.length === 0 && trackingData.length === 0) {
+                showConfirmationDialog("Please save or track some colors first.", () => {});
+                return;
+            }
+            downloadCSV();
+        });
+
+        clearButton.addEventListener('click', () => {
+            if (isTracking) return;
+            colorSamples = [];
+            trackingData = [];
+            renderSampleList();
+            stopTracking();
+        });
+
+        window.addEventListener('resize', () => {
+            if (currentImage) {
+                const aspectRatio = currentImage.width / currentImage.height;
+                const containerWidth = mainCanvas.offsetWidth;
+                const containerHeight = containerWidth / aspectRatio;
+                mainCanvas.style.height = `${containerHeight}px`;
+                ctx.drawImage(currentImage, 0, 0, currentImage.width, currentImage.height);
+            } else if (videoElement.srcObject) {
+                mainCanvas.style.height = `${mainCanvas.offsetWidth}px`;
+            }
+        });
+
+        async function requestCameraPermission() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                stream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                console.warn("Camera permission not granted:", err);
+            }
+        }
+        
+        window.onload = function() {
+            requestCameraPermission();
+        };
+    </script>
+</body>
+</html>
